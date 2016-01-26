@@ -44,14 +44,6 @@ int curLevel = 0;
 /********************************************************************/
 
 
-void mouseEvent (int evt, int x, int y, int flags, void* param)
-{                    
-     if (evt == CV_EVENT_LBUTTONDOWN)
-     { 
-     }         
-}
-
-
 Mat LaplacianPyr(Mat img)
 {
 	Mat down, up, lap;
