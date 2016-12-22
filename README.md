@@ -20,3 +20,5 @@ The code includes the following spatial and temporal filters:
 	
 This implementation is based on the works done at MIT CSAIL
 For futher details visit http://people.csail.mit.edu/mrub/vidmag/
+
+This project has been adapted by : [https://github.com/katiewasnothere/bwi_pulse_detector](https://github.com/katiewasnothere/bwi_pulse_detector)
