@@ -30,4 +30,5 @@ Required packages: g++, CMake, OpenCV, Boost
 	
 ## Adaptations:
 This project has been adapted by:
-[1] [https://github.com/katiewasnothere/bwi_pulse_detector](https://github.com/katiewasnothere/bwi_pulse_detector)
+
+[https://github.com/katiewasnothere/bwi_pulse_detector](https://github.com/katiewasnothere/bwi_pulse_detector)
