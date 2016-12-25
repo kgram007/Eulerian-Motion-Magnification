@@ -4,8 +4,8 @@
 input_filename		= data/baby.mp4
 output_filename		= data/baby_mag.avi
 
-input_width			= 320
-input_height		= 240
+input_width			= 640
+input_height		= 480
 output_width		= 960
 output_height		= 544
 
@@ -15,6 +15,6 @@ cutoff_freq_low		= 0.01
 cutoff_freq_high	= 1.0
 chrom_attenuation	= 0.1
 exaggeration_factor	= 2.0
-delta				= 10
-lambda				= 10
+delta				= 0
+lambda				= 0
 levels				= 6
