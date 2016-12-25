@@ -1,0 +1,17 @@
+
+### Params: baby video
+
+input_filename		= data/baby.mp4
+output_filename		= data/baby_mag.avi
+
+input_width			= 320
+input_height		= 240
+
+alpha				= 20
+lambda_c			= 16
+cutoff_freq_low		= 0.05
+cutoff_freq_high	= 0.4
+chrom_attenuation	= 0.1
+exaggeration_factor	= 0.1
+delta				= 0
+lambda				= 0
