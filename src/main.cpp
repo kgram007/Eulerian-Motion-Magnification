@@ -25,6 +25,8 @@ int main(int argc, char **argv)
     string output_filename;
     int input_width;
     int input_height;
+    int output_width;
+    int output_height;
     double alpha;
     double lambda_c;
     double cutoff_freq_low;
@@ -33,6 +35,7 @@ int main(int argc, char **argv)
     double exaggeration_factor;
     double delta;
     double lambda;
+    int levels;
 
     if (argc <= 1)
     {
@@ -56,6 +59,8 @@ int main(int argc, char **argv)
             ("output_filename", po::value<string>(&output_filename)->default_value( "" ))
             ("input_width", po::value<int>(&input_width)->default_value( 0 ))
             ("input_height", po::value<int>(&input_height)->default_value( 0 ))
+            ("output_width", po::value<int>(&output_width)->default_value( 0 ))
+            ("output_height", po::value<int>(&output_height)->default_value( 0 ))
             ("alpha", po::value<double>(&alpha)->default_value( 20 ))
             ("lambda_c", po::value<double>(&lambda_c)->default_value( 16 ))
             ("cutoff_freq_low", po::value<double>(&cutoff_freq_low)->default_value( 0.05 ))
@@ -64,6 +69,7 @@ int main(int argc, char **argv)
             ("exaggeration_factor", po::value<double>(&exaggeration_factor)->default_value( 2.0 ))
             ("delta", po::value<double>(&delta)->default_value( 0 ))
             ("lambda", po::value<double>(&lambda)->default_value( 0 ))
+            ("levels", po::value<int>(&levels)->default_value( 5 ))
             ;
     po::variables_map vm;
     po::store(po::parse_config_file(file, desc), vm);
@@ -77,6 +83,8 @@ int main(int argc, char **argv)
     motion_mag->setOutputFileName(output_filename);
     motion_mag->setInputImgWidth(input_width);
     motion_mag->setInputImgHeight(input_height);
+    motion_mag->setOutputImgWidth(output_width);
+    motion_mag->setOutputImgHeight(output_height);
     motion_mag->setAlpha(alpha);
     motion_mag->setLambdaC(lambda_c);
     motion_mag->setCutoffFreqLow(cutoff_freq_low);
@@ -85,6 +93,7 @@ int main(int argc, char **argv)
     motion_mag->setExaggerationFactor(exaggeration_factor);
     motion_mag->setDelta(delta);
     motion_mag->setLambda(lambda);
+    motion_mag->setLapPyramidLevels(levels);
 
     // Init Motion Magnification object
     bool init_status = motion_mag->init();

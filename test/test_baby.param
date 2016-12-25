@@ -6,12 +6,15 @@ output_filename		= data/baby_mag.avi
 
 input_width			= 320
 input_height		= 240
+output_width		= 960
+output_height		= 544
 
-alpha				= 20
+alpha				= 10
 lambda_c			= 16
-cutoff_freq_low		= 0.05
-cutoff_freq_high	= 0.4
+cutoff_freq_low		= 0.01
+cutoff_freq_high	= 1.0
 chrom_attenuation	= 0.1
-exaggeration_factor	= 0.1
-delta				= 0
-lambda				= 0
+exaggeration_factor	= 2.0
+delta				= 10
+lambda				= 10
+levels				= 6

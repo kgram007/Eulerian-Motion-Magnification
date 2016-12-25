@@ -86,6 +86,8 @@ public:
     double getLambdaC() const                                           {return lambda_c_; }
     void setLambdaC(double lambdaC)                                     {lambda_c_ = lambdaC; }
 
+    int getLapPyramidLevels() const                                     { return lap_pyramid_levels_; }
+    void setLapPyramidLevels(int lapPyramidLevels)                      { lap_pyramid_levels_ = lapPyramidLevels; }
 
 private:
     std::string input_file_name_;
@@ -100,8 +102,6 @@ private:
     cv::VideoWriter* output_cap_;
     bool write_output_file_;
 
-    int lap_pyramid_levels_;
-
     cv::Mat img_input_;
     cv::Mat img_input_lab_;
     cv::Mat img_spatial_filter_;
@@ -112,6 +112,7 @@ private:
     std::vector< cv::Mat > img_vec_lowpass_2_;
     std::vector< cv::Mat > img_vec_filtered_;
 
+    int lap_pyramid_levels_;
     double cutoff_freq_low_;
     double cutoff_freq_high_;
     double lambda_c_;

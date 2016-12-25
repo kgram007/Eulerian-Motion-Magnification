@@ -63,18 +63,27 @@ bool EulerianMotionMag::init()
         return false;
     }
 
-    if (input_img_width_ != 0 && input_img_height_ != 0)
+    if (input_img_width_ <= 0 || input_img_height_ <= 0)
     {
-        input_cap_->set(CV_CAP_PROP_FRAME_WIDTH, input_img_width_);
-        input_cap_->set(CV_CAP_PROP_FRAME_WIDTH, input_img_height_);
+        // Use default input image size
+        input_img_width_ = input_cap_->get(CV_CAP_PROP_FRAME_WIDTH);
+        input_img_height_ = input_cap_->get(CV_CAP_PROP_FRAME_HEIGHT);
     }
     frame_count_ = input_cap_->get(CV_CAP_PROP_FRAME_COUNT);
     input_fps_ = input_cap_->get(CV_CAP_PROP_FPS);
-    input_img_width_ = input_cap_->get(CV_CAP_PROP_FRAME_WIDTH);
-    input_img_height_ = input_cap_->get(CV_CAP_PROP_FRAME_HEIGHT);
     cout << "Input video resolution is (" << input_img_width_ << ", " << input_img_height_ << ")" << endl;
 
     // Output:
+    // Output Display Window
+    cvNamedWindow(DISPLAY_WINDOW_NAME, CV_WINDOW_AUTOSIZE);
+    if (output_img_width_ <= 0 || output_img_height_ <= 0)
+    {
+        // Use input image size for output
+        output_img_width_ = input_img_width_;
+        output_img_height_ = input_img_height_;
+    }
+    cout << "Output video resolution is (" << output_img_width_ << ", " << output_img_height_ << ")" << endl;
+
     // Output File:
     if (!output_file_name_.empty())
         write_output_file_ = true;
@@ -84,7 +93,7 @@ bool EulerianMotionMag::init()
         output_cap_ = new cv::VideoWriter(output_file_name_,// filename
                                           getCodecNumber(output_file_name_), // codec to be used
                                           input_fps_, // frame rate of the video
-                                          cv::Size(input_img_width_, input_img_height_), // frame size
+                                          cv::Size(output_img_width_, output_img_height_), // frame size
                                           true  // color video
                                           );
         if (!output_cap_->isOpened())
@@ -93,9 +102,6 @@ bool EulerianMotionMag::init()
             return false;
         }
     }
-
-    // Output Display Window
-    cvNamedWindow(DISPLAY_WINDOW_NAME, CV_WINDOW_AUTOSIZE);
 
     cout << "Init successful!" << endl;
     return true;
@@ -113,11 +119,13 @@ void EulerianMotionMag::run()
         if (img_input_.empty())
             break;
 
-        img_input_lab_ = img_input_.clone();
-
         cout << "Processing image frame: (" << frame_num_ << "/" << frame_count_ << ")" << flush;
 
+        // resize input image
+        resize(img_input_, img_input_, cv::Size(input_img_width_, input_img_height_));
+
         // 1. Convert to Lab color space
+        img_input_lab_ = img_input_.clone();
         img_input_lab_.convertTo(img_input_lab_, CV_32FC3, 1.0 / 255.0f);
         cvtColor(img_input_lab_, img_input_lab_, CV_BGR2Lab);
 
@@ -173,6 +181,9 @@ void EulerianMotionMag::run()
         img_motion_mag_ = img_spatial_filter_.clone();
         cvtColor(img_motion_mag_, img_motion_mag_, CV_Lab2BGR);
         img_motion_mag_.convertTo(img_motion_mag_, CV_8UC3, 255.0, 1.0 / 255.0);
+
+        // resize output image
+        resize(img_motion_mag_, img_motion_mag_, cv::Size(output_img_width_, output_img_height_));
 
         imshow(DISPLAY_WINDOW_NAME, img_motion_mag_);
         if (write_output_file_)
