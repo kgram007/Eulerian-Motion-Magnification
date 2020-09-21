@@ -1,28 +1,29 @@
-//***********************************************************************//
+//*****************************************************************************
+// Copyright 2016 Ramsundar K G. All Rights Reserved.
 //
-//	File Name:      main.cpp
-//	Author:         Ramsundar K G (ramsundar@asu.edu, kgram007@gmail.com)
-//	Date:           December 22, 2016
+// This source code is licensed as defined by the LICENSE file found in the
+// root directory of this source tree.
 //
-//	Description: C++ implementation of the paper:
-//               "Eulerian Video Magnification for Revealing
-//               Subtle Changes in the World", using OpenCV library
+// Author: Ramsundar K G (kgram007@gmail.com)
 //
-//***********************************************************************//
+// This file is a part of C++ implementation of Eulerian Motion Magnification
+// adapted from https://github.com/wzpan/QtEVM
+//
+//*****************************************************************************
 
-#include "EulerianMotionMag.h"
-
-#include <iostream>
 #include <fstream>
+#include <iostream>
+
 #include <boost/program_options.hpp>
 
-using namespace std;
+#include "eulerian_motion_mag.h"
+
 namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
-    string input_filename;
-    string output_filename;
+    std::string input_filename;
+    std::string output_filename;
     int input_width;
     int input_height;
     int output_width;
@@ -39,38 +40,38 @@ int main(int argc, char **argv)
 
     if (argc <= 1)
     {
-        cerr << "Error: Input param filename must be specified!" << endl;
-        return -1;
+        std::cerr << "Error: Input param filename must be specified!" << std::endl;
+        return 1;
     }
 
     // Read input param file
-    ifstream file(argv[1]);
+    std::ifstream file(argv[1]);
     if (!file.is_open())
     {
-        cerr << "Error: Unable to open param file: " << string(argv[1]) << endl;
-        return -1;
+        std::cerr << "Error: Unable to open param file: " << std::string(argv[1]) << std::endl;
+        return 1;
     }
 
     // Parse param file for getting parameter values
     po::options_description desc("Eulerian-Motion-Magnification");
     desc.add_options()
-            ("help,h", "produce help message")
-            ("input_filename", po::value<string>(&input_filename)->default_value( "" ))
-            ("output_filename", po::value<string>(&output_filename)->default_value( "" ))
-            ("input_width", po::value<int>(&input_width)->default_value( 0 ))
-            ("input_height", po::value<int>(&input_height)->default_value( 0 ))
-            ("output_width", po::value<int>(&output_width)->default_value( 0 ))
-            ("output_height", po::value<int>(&output_height)->default_value( 0 ))
-            ("alpha", po::value<double>(&alpha)->default_value( 20 ))
-            ("lambda_c", po::value<double>(&lambda_c)->default_value( 16 ))
-            ("cutoff_freq_low", po::value<double>(&cutoff_freq_low)->default_value( 0.05 ))
-            ("cutoff_freq_high", po::value<double>(&cutoff_freq_high)->default_value( 0.4 ))
-            ("chrom_attenuation", po::value<double>(&chrom_attenuation)->default_value( 0.1 ))
-            ("exaggeration_factor", po::value<double>(&exaggeration_factor)->default_value( 2.0 ))
-            ("delta", po::value<double>(&delta)->default_value( 0 ))
-            ("lambda", po::value<double>(&lambda)->default_value( 0 ))
-            ("levels", po::value<int>(&levels)->default_value( 5 ))
-            ;
+        ("help,h", "produce help message")
+        ("input_filename", po::value<std::string>(&input_filename)->default_value( "" ))  // NOLINT [whitespace/parens]
+        ("output_filename", po::value<std::string>(&output_filename)->default_value( "" ))  // NOLINT [whitespace/parens]
+        ("input_width", po::value<int>(&input_width)->default_value( 0 ))  // NOLINT [whitespace/parens]
+        ("input_height", po::value<int>(&input_height)->default_value( 0 ))  // NOLINT [whitespace/parens]
+        ("output_width", po::value<int>(&output_width)->default_value( 0 ))  // NOLINT [whitespace/parens]
+        ("output_height", po::value<int>(&output_height)->default_value( 0 ))  // NOLINT [whitespace/parens]
+        ("alpha", po::value<double>(&alpha)->default_value( 20 ))  // NOLINT [whitespace/parens]
+        ("lambda_c", po::value<double>(&lambda_c)->default_value( 16 ))  // NOLINT [whitespace/parens]
+        ("cutoff_freq_low", po::value<double>(&cutoff_freq_low)->default_value( 0.05 ))  // NOLINT [whitespace/parens]
+        ("cutoff_freq_high", po::value<double>(&cutoff_freq_high)->default_value( 0.4 ))  // NOLINT [whitespace/parens]
+        ("chrom_attenuation", po::value<double>(&chrom_attenuation)->default_value( 0.1 ))  // NOLINT [whitespace/parens]
+        ("exaggeration_factor", po::value<double>(&exaggeration_factor)->default_value( 2.0 ))  // NOLINT [whitespace/parens]
+        ("delta", po::value<double>(&delta)->default_value( 0 ))  // NOLINT [whitespace/parens]
+        ("lambda", po::value<double>(&lambda)->default_value( 0 ))  // NOLINT [whitespace/parens]
+        ("levels", po::value<int>(&levels)->default_value( 5 ))  // NOLINT [whitespace/parens]
+    ;  // NOLINT [whitespace/semicolon]
     po::variables_map vm;
     po::store(po::parse_config_file(file, desc), vm);
     po::notify(vm);
@@ -98,7 +99,7 @@ int main(int argc, char **argv)
     // Init Motion Magnification object
     bool init_status = motion_mag->init();
     if (!init_status)
-        return -1;
+        return 1;
 
     // Run Motion Magnification
     motion_mag->run();

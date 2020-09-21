@@ -1,21 +1,19 @@
-//***********************************************************************//
+//*****************************************************************************
+// Copyright 2016 Ramsundar K G. All Rights Reserved.
 //
-//	File Name:		EulerianMotionMag.cpp
-//	Author:			Ramsundar K G (ramsundar@asu.edu)
-//	Date:			December 22, 2016
+// This source code is licensed as defined by the LICENSE file found in the
+// root directory of this source tree.
 //
-//	Description:    EulerianMotionMag class definition
-//                  Adapted from: https://github.com/wzpan/QtEVM
+// Author: Ramsundar K G (kgram007@gmail.com)
 //
-//***********************************************************************//
+// This file is a part of C++ implementation of Eulerian Motion Magnification
+// adapted from https://github.com/wzpan/QtEVM
+//
+//*****************************************************************************
 
-// Includes
-#include "EulerianMotionMag.h"
+#include "eulerian_motion_mag.h"
 
-// Namespace
-using namespace cv;
-using namespace std;
-
+#define DISPLAY_WINDOW_NAME "Motion Magnified Output"
 
 EulerianMotionMag::EulerianMotionMag()
         : input_file_name_()
@@ -29,8 +27,8 @@ EulerianMotionMag::EulerianMotionMag()
         , write_output_file_(false)
         , lap_pyramid_levels_(5)
         , loop_time_ms_(0)
-        , cutoff_freq_low_(0.05)    // Hz
-        , cutoff_freq_high_(0.4)    // Hz
+        , cutoff_freq_low_(0.05)  // Hz
+        , cutoff_freq_high_(0.4)  // Hz
         , lambda_c_(16)
         , alpha_(20)
         , chrom_attenuation_(0.1)
@@ -45,10 +43,10 @@ EulerianMotionMag::EulerianMotionMag()
 
 EulerianMotionMag::~EulerianMotionMag()
 {
-    if(input_cap_ != NULL)
+    if (input_cap_ != NULL)
         input_cap_->release();
 
-    if(output_cap_ != NULL)
+    if (output_cap_ != NULL)
         output_cap_->release();
 }
 
@@ -59,7 +57,7 @@ bool EulerianMotionMag::init()
     input_cap_ = new cv::VideoCapture(input_file_name_);
     if (!input_cap_->isOpened())
     {
-        cerr << "Error: Unable to open input video file: " << input_file_name_ << endl;
+        std::cerr << "Error: Unable to open input video file: " << input_file_name_ << std::endl;
         return false;
     }
 
@@ -71,7 +69,7 @@ bool EulerianMotionMag::init()
     }
     frame_count_ = input_cap_->get(CV_CAP_PROP_FRAME_COUNT);
     input_fps_ = input_cap_->get(CV_CAP_PROP_FPS);
-    cout << "Input video resolution is (" << input_img_width_ << ", " << input_img_height_ << ")" << endl;
+    std::cout << "Input video resolution is (" << input_img_width_ << ", " << input_img_height_ << ")" << std::endl;
 
     // Output:
     // Output Display Window
@@ -82,7 +80,8 @@ bool EulerianMotionMag::init()
         output_img_width_ = input_img_width_;
         output_img_height_ = input_img_height_;
     }
-    cout << "Output video resolution is (" << output_img_width_ << ", " << output_img_height_ << ")" << endl;
+
+    std::cout << "Output video resolution is (" << output_img_width_ << ", " << output_img_height_ << ")" << std::endl;
 
     // Output File:
     if (!output_file_name_.empty())
@@ -90,26 +89,26 @@ bool EulerianMotionMag::init()
 
     if (write_output_file_)
     {
-        output_cap_ = new cv::VideoWriter(output_file_name_,// filename
-                                          getCodecNumber(output_file_name_), // codec to be used
-                                          input_fps_, // frame rate of the video
-                                          cv::Size(output_img_width_, output_img_height_), // frame size
-                                          true  // color video
-                                          );
+        output_cap_ = new cv::VideoWriter(output_file_name_,                                // filename
+                                          getCodecNumber(output_file_name_),                // codec to be used
+                                          input_fps_,                                       // frame rate of the video
+                                          cv::Size(output_img_width_, output_img_height_),  // frame size
+                                          true                                              // color video
+        );  // NOLINT [whitespace/braces]
         if (!output_cap_->isOpened())
         {
-            cerr << "Error: Unable to create output video file: " << output_file_name_ << endl;
+            std::cerr << "Error: Unable to create output video file: " << output_file_name_ << std::endl;
             return false;
         }
     }
 
-    cout << "Init successful!" << endl;
+    std::cout << "Init Successful" << std::endl;
     return true;
 }
 
 void EulerianMotionMag::run()
 {
-    cout << "Running Eulter Motion Magnification program..." << endl << endl;
+    std::cout << "Running Eulerian Motion Magnification...\n" << std::endl;
 
     while (1)
     {
@@ -119,7 +118,7 @@ void EulerianMotionMag::run()
         if (img_input_.empty())
             break;
 
-        cout << "Processing image frame: (" << frame_num_ << "/" << frame_count_ << ")" << flush;
+        std::cout << "Processing image frame: " << frame_num_ << " / " << frame_count_ << std::flush;
 
         // resize input image
         resize(img_input_, img_input_, cv::Size(input_img_width_, input_img_height_));
@@ -155,7 +154,8 @@ void EulerianMotionMag::run()
 
             // compute the representative wavelength lambda_
             // for the lowest spatial frequency band of Laplacian pyramid
-            lambda_ = sqrt((float) (input_img_width_ * input_img_width_ + input_img_height_ * input_img_height_)) / 3; // 3 is experimental constant
+            // Note: 3 is experimental constant
+            lambda_ = sqrt((float)(input_img_width_ * input_img_width_ + input_img_height_ * input_img_height_)) / 3;
 
             for (int i = lap_pyramid_levels_; i >= 0; i--)
             {
@@ -174,7 +174,7 @@ void EulerianMotionMag::run()
         attenuate(img_motion_, img_motion_);
 
         // 6. combine source frame and motion image
-        if (frame_num_ > 0)    // don't amplify first frame
+        if (frame_num_ > 0)  // don't amplify first frame
             img_spatial_filter_ += img_motion_;
 
         // 7. convert back to rgb color space and CV_8UC3
@@ -191,17 +191,17 @@ void EulerianMotionMag::run()
 
         frame_num_++;
         loop_time_ms_ = timer_.getTimeMilliSec();
-        cout << " | Time taken: " << loop_time_ms_ << " ms" << endl;
+        std::cout << " | Time taken: " << loop_time_ms_ << " ms" << std::endl;
 
-        char c = waitKey(1);
+        char c = cv::waitKey(1);
         if (c == 27)
             break;
     }
 }
 
-int EulerianMotionMag::getCodecNumber(string file_name)
+int EulerianMotionMag::getCodecNumber(std::string file_name)
 {
-    string file_extn = file_name.substr(file_name.find_last_of('.') + 1);
+    std::string file_extn = file_name.substr(file_name.find_last_of('.') + 1);
 
     // Currently supported video formats are AVI and MPEG-4
     if (file_extn == "avi")
@@ -212,31 +212,31 @@ int EulerianMotionMag::getCodecNumber(string file_name)
         return -1;
 }
 
-Mat EulerianMotionMag::LaplacianPyr(Mat img)
+cv::Mat EulerianMotionMag::LaplacianPyr(cv::Mat img)
 {
-    Mat down, up, lap;
+    cv::Mat down, up, lap;
     pyrDown(img, down);
     pyrUp(down, up);
     lap = img - up;
     return lap;
 }
 
-bool EulerianMotionMag::buildLaplacianPyramid(const Mat& img, const int levels, vector< Mat >& pyramid)
+bool EulerianMotionMag::buildLaplacianPyramid(const cv::Mat& img, const int levels, std::vector<cv::Mat>& pyramid)
 {
     if (levels < 1)
     {
-        cerr << "Error: Laplacian Pyramid Levels should be larger than 1" << endl;
+        std::cerr << "Error: Laplacian Pyramid Levels should be larger than 1" << std::endl;
         return false;
     }
 
     pyramid.clear();
-    Mat currentImg = img;
+    cv::Mat currentImg = img;
     for (int l = 0; l < levels; l++)
     {
-        Mat down, up;
+        cv::Mat down, up;
         pyrDown(currentImg, down);
         pyrUp(down, up, currentImg.size());
-        Mat lap = currentImg - up;
+        cv::Mat lap = currentImg - up;
         pyramid.push_back(lap);
         currentImg = down;
     }
@@ -245,19 +245,19 @@ bool EulerianMotionMag::buildLaplacianPyramid(const Mat& img, const int levels, 
     return true;
 }
 
-void EulerianMotionMag::reconImgFromLaplacianPyramid(const vector< Mat >& pyramid, const int levels, Mat& dst)
+void EulerianMotionMag::reconImgFromLaplacianPyramid(const std::vector<cv::Mat>& pyramid, const int levels, cv::Mat& dst)
 {
-    Mat curr_img = pyramid[levels];
+    cv::Mat curr_img = pyramid[levels];
     for (int i = levels - 1; i >= 0; --i)
     {
-        Mat up;
+        cv::Mat up;
         pyrUp(curr_img, up, pyramid[i].size());
         curr_img = up + pyramid[i];
     }
     dst = curr_img.clone();
 }
 
-void EulerianMotionMag::temporalIIRFilter(const Mat& src, Mat& dst, int level)
+void EulerianMotionMag::temporalIIRFilter(const cv::Mat& src, cv::Mat& dst, int level)
 {
     cv::Mat temp_1 = (1 - cutoff_freq_high_) * img_vec_lowpass_1_[level] + cutoff_freq_high_ * src;
     cv::Mat temp_2 = (1 - cutoff_freq_low_) * img_vec_lowpass_2_[level] + cutoff_freq_low_ * src;
@@ -266,24 +266,23 @@ void EulerianMotionMag::temporalIIRFilter(const Mat& src, Mat& dst, int level)
     dst = img_vec_lowpass_1_[level] - img_vec_lowpass_2_[level];
 }
 
-void EulerianMotionMag::amplify(const Mat& src, Mat& dst, int level)
+void EulerianMotionMag::amplify(const cv::Mat& src, cv::Mat& dst, int level)
 {
     double curr_alpha;
-    //compute modified alpha_ for this level
+    // Compute modified alpha_ for this level
     curr_alpha = lambda_ / delta_ / 8 - 1;
     curr_alpha *= exaggeration_factor_;
-    if (level == lap_pyramid_levels_ || level == 0) // ignore the highest and lowest frequency band
+    if (level == lap_pyramid_levels_ || level == 0)  // ignore the highest and lowest frequency band
         dst = src * 0;
     else
-        dst = src * min(alpha_, curr_alpha);
+        dst = src *std:: min(alpha_, curr_alpha);
 }
 
-void EulerianMotionMag::attenuate(Mat &src, Mat &dst)
+void EulerianMotionMag::attenuate(cv::Mat& src, cv::Mat& dst)
 {
-    Mat planes[3];
+    cv::Mat planes[3];
     split(src, planes);
     planes[1] = planes[1] * chrom_attenuation_;
     planes[2] = planes[2] * chrom_attenuation_;
     merge(planes, 3, dst);
 }
-

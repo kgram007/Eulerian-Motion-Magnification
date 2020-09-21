@@ -1,12 +1,15 @@
-#********************************************************************
+#******************************************************************************
+# Copyright 2016 Ramsundar K G. All Rights Reserved.
 #
-#	File Name:      EulerianMotionMag.cpp
-#	Author:         Ramsundar K G (ramsundar@asu.edu)
-#	Date:           December 22, 2016
+# This source code is licensed as defined by the LICENSE file found in the
+# root directory of this source tree.
 #
-#	Description:    CMakeList file
+# Author: Ramsundar K G (kgram007@gmail.com)
 #
-#********************************************************************
+# This file is a part of C++ implementation of Eulerian Motion Magnification
+# adapted from https://github.com/wzpan/QtEVM
+#
+#******************************************************************************
 
 # CMake version check
 cmake_minimum_required(VERSION 2.8)
@@ -24,8 +27,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fopenmp -std=c++11")
 
 # Includes
 include_directories("include")
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-include_directories( ${Boost_INCLUDE_DIRS} )
+include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
 
 # Executable file directory
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -33,10 +36,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 # Executable
 add_executable(${PROJECT_NAME}
 	src/main.cpp
-	src/EulerianMotionMag.cpp
-	
-	include/EulerianMotionMag.h
-	include/Timer.h
+	src/eulerian_motion_mag.cpp
+
+	include/eulerian_motion_mag.h
+	include/timer.h
 )
 
 # Link libraries

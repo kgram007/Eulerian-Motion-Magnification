@@ -41,6 +41,10 @@ CTestTestfile.cmake
 *.lib
 
 # Executables
+bin/
 *.exe
 *.out
 *.app
+
+# vscode
+.vscode
