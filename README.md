@@ -1,10 +1,14 @@
 # Eulerian Motion Magnification
 
-## About:
-This is The C++ implementation of the paper "Eulerian Video Magnification for Revealing Subtle Changes in the World" ACM Transaction on Graphics, Volume 31, Number 4 (Proceedings SIGGRAPH 2012).
+<p align="left">
+  <a href="https://github.com/kgram007/Eulerian-Motion-Magnification/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-MIT-brightgreen.svg" alt="License"></a>
+</p>
 
-The paper and example videos can be found on the project web page
-http://people.csail.mit.edu/mrub/vidmag/
+## About:
+This is a C++ implementation of the paper "Eulerian Video Magnification for Revealing Subtle Changes in the World" ACM Transaction on Graphics, Volume 31, Number 4 (Proceedings SIGGRAPH 2012).
+
+This implementation is based on the works done at MIT CSAIL.
+For futher details visit http://people.csail.mit.edu/mrub/vidmag
 
 The code includes the following spatial and temporal filters:
 
@@ -12,15 +16,12 @@ The code includes the following spatial and temporal filters:
 |-------------------|---------------------------|
 | Laplacian pyramid | Second-order IIR bandpass |
 
-Programming Language: C++
 Library Used: OpenCV, Boost
 	
-This implementation is based on the works done at MIT CSAIL
-For futher details visit http://people.csail.mit.edu/mrub/vidmag/
 
 ## Compiling and Running the code:
 Required packages: g++, CMake, OpenCV, Boost
-### Compiling in Linux
+### Compiling
 	$ cd <PROJ_DIR>
 	$ cmake .
 	$ make
