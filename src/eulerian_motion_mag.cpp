@@ -64,16 +64,16 @@ bool EulerianMotionMag::init()
     if (input_img_width_ <= 0 || input_img_height_ <= 0)
     {
         // Use default input image size
-        input_img_width_ = input_cap_->get(CV_CAP_PROP_FRAME_WIDTH);
-        input_img_height_ = input_cap_->get(CV_CAP_PROP_FRAME_HEIGHT);
+        input_img_width_ = input_cap_->get(cv::CAP_PROP_FRAME_WIDTH);
+        input_img_height_ = input_cap_->get(cv::CAP_PROP_FRAME_HEIGHT);
     }
-    frame_count_ = input_cap_->get(CV_CAP_PROP_FRAME_COUNT);
-    input_fps_ = input_cap_->get(CV_CAP_PROP_FPS);
+    frame_count_ = input_cap_->get(cv::CAP_PROP_FRAME_COUNT);
+    input_fps_ = input_cap_->get(cv::CAP_PROP_FPS);
     std::cout << "Input video resolution is (" << input_img_width_ << ", " << input_img_height_ << ")" << std::endl;
 
     // Output:
     // Output Display Window
-    cvNamedWindow(DISPLAY_WINDOW_NAME, CV_WINDOW_AUTOSIZE);
+    cv::namedWindow(DISPLAY_WINDOW_NAME, cv::WINDOW_AUTOSIZE);
     if (output_img_width_ <= 0 || output_img_height_ <= 0)
     {
         // Use input image size for output
@@ -126,7 +126,7 @@ void EulerianMotionMag::run()
         // 1. Convert to Lab color space
         img_input_lab_ = img_input_.clone();
         img_input_lab_.convertTo(img_input_lab_, CV_32FC3, 1.0 / 255.0f);
-        cvtColor(img_input_lab_, img_input_lab_, CV_BGR2Lab);
+        cvtColor(img_input_lab_, img_input_lab_, cv::COLOR_BGR2Lab);
 
         // 2. Spatial filtering one frame
         img_spatial_filter_ = img_input_lab_.clone();
@@ -179,7 +179,7 @@ void EulerianMotionMag::run()
 
         // 7. convert back to rgb color space and CV_8UC3
         img_motion_mag_ = img_spatial_filter_.clone();
-        cvtColor(img_motion_mag_, img_motion_mag_, CV_Lab2BGR);
+        cvtColor(img_motion_mag_, img_motion_mag_, cv::COLOR_Lab2BGR);
         img_motion_mag_.convertTo(img_motion_mag_, CV_8UC3, 255.0, 1.0 / 255.0);
 
         // resize output image
@@ -205,9 +205,9 @@ int EulerianMotionMag::getCodecNumber(std::string file_name)
 
     // Currently supported video formats are AVI and MPEG-4
     if (file_extn == "avi")
-        return CV_FOURCC('M', 'J', 'P', 'G');
+        return cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
     else if (file_extn == "mp4")
-        return CV_FOURCC('D', 'I', 'V', 'X');
+        return cv::VideoWriter::fourcc('D', 'I', 'V', 'X');
     else
         return -1;
 }
